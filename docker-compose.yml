@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:14
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: salesuser
+      POSTGRES_PASSWORD: salespassword
+      POSTGRES_DB: sales_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  memcached:
+    image: memcached:latest
+    ports:
+      - "11211:11211"
+    command: -m 64
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

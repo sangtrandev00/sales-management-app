@@ -1,0 +1,27 @@
+GET /cache-demo/products/performance-test
+GET /cache-demo/categories/performance-test
+GET /cache-demo/flush-cache
+GET /cache-demo/cache-stats
+GET /cache-demo/get-custom-cache/:key
+POST /cache-demo/set-custom-cache
+GET /categories
+GET /categories/:id
+POST /categories
+PATCH /categories/:id
+DELETE /categories/:id
+GET /orders
+GET /orders/:id
+POST /orders
+PATCH /orders/:id
+PATCH /orders/:id/status
+GET /products
+GET /products/:id
+POST /products
+PATCH /products/:id
+DELETE /products/:id
+// Body for POST request
+{
+  "key": "exampleKey",
+  "value": "exampleValue",
+  "ttl": 3600
+}
