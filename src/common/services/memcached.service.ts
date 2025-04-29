@@ -7,7 +7,7 @@ import * as Memcached from 'memcached';
 export class MemcachedService implements OnModuleInit, OnModuleDestroy {
   private client: Memcached;
 
-  constructor(private configService: ConfigService) {}
+  constructor(private configService: ConfigService) { }
 
   onModuleInit() {
     const host = this.configService.get('MEMCACHED_HOST');
@@ -63,5 +63,13 @@ export class MemcachedService implements OnModuleInit, OnModuleDestroy {
         resolve(true);
       });
     });
+  }
+
+  async setSession<T>(
+    key: string,
+    value: T,
+    ttl: number = 3600,
+  ): Promise<boolean> {
+    return this.set(key, value, ttl);
   }
 }

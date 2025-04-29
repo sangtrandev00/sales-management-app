@@ -1,0 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+tool: yarn instead of npm
+technology: NestJS, Typeorm
+database: PostgresSQL
