@@ -17,7 +17,7 @@ services:
     image: memcached:latest
     ports:
       - "11211:11211"
-    command: -m 64
+    command: memcached -m 64 -v
     networks:
       - app-network
 

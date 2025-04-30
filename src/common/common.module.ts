@@ -5,6 +5,7 @@ import { SessionService } from './services/session.service';
 
 @Global()
 @Module({
+  imports: [],
   providers: [MemcachedService, SessionService],
   exports: [MemcachedService, SessionService],
 })

@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { SessionService } from '../common/services/session.service';
 import { SessionGuard } from '../common/guards/session.guard';
+import { v4 as uuidv4 } from 'uuid';
+import { MemcachedService } from '../common/services/memcached.service';
 
 interface LoginDto {
   userId: number;
@@ -18,7 +20,10 @@ interface LoginDto {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly sessionService: SessionService) {}
+  constructor(
+    private readonly sessionService: SessionService,
+    private readonly memcachedService: MemcachedService,
+  ) {}
 
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
@@ -65,5 +70,35 @@ export class AuthController {
       sessionCreated: session.createdAt,
       lastActivity: session.lastActivity,
     };
+  }
+
+  /**
+   * Request a password reset (generates and stores a token)
+   */
+  @Post('request-password-reset')
+  async requestPasswordReset(@Body('email') email: string) {
+    // In a real app, validate email and check if user exists
+    const token = uuidv4();
+    const key = `password_reset:${token}`;
+    await this.memcachedService.setTemporaryToken(key, { email }, 600); // 10 min
+    // In a real app, send token to user's email
+    return { message: 'Password reset token generated', token };
+  }
+
+  /**
+   * Verify a password reset token
+   */
+  @Post('verify-password-reset')
+  async verifyPasswordReset(@Body('token') token: string) {
+    const key = `password_reset:${token}`;
+    const data = await this.memcachedService.getTemporaryToken<{
+      email: string;
+    }>(key);
+    if (!data) {
+      return { valid: false, message: 'Invalid or expired token' };
+    }
+    // Optionally, delete the token after use
+    await this.memcachedService.deleteTemporaryToken(key);
+    return { valid: true, email: data.email };
   }
 }

@@ -14,7 +14,7 @@ export class CacheDemoController {
     private memcachedService: MemcachedService,
     private productsService: ProductsService,
     private categoriesService: CategoriesService,
-  ) { }
+  ) {}
 
   /**
    * Tests the performance difference between cached and uncached product queries
@@ -131,5 +131,18 @@ export class CacheDemoController {
       return { message: `No cache found for key: ${key}` };
     }
     return { key, value };
+  }
+
+  /**
+   * Gets all keys currently stored in the cache
+   * @returns Array of all keys in Memcached
+   */
+  @Get('all-keys')
+  async getAllKeys() {
+    const keys = await this.memcachedService.getAllKeys();
+    return {
+      count: keys.length,
+      keys: keys,
+    };
   }
 }
